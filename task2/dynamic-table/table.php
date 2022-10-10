@@ -70,31 +70,38 @@ $users = [
     <thead>
         <tr>
             <?php 
-            foreach($users[0] as $key => $value){
-                echo "<th>".$key."</th>";
-            }
+                if(!empty($users)){
+                        foreach($users[0] as $key => $value){
+                            echo "<th>".$key."</th>";
+                        }
+                }else{
+                    echo "<th> No data found";
+                }
             ?>
         </tr>
     </thead>
     <tbody>
-        <?php
-        for($i=0; $i < count($users); $i++){
-            echo "<tr>
-            <td>".$users[$i]->id."</td>
-            <td>".$users[$i]->name."</td>
-            <td>";
-            $users[$i]->gender->gender === 'm'? print 'Male': print 'female';
-            echo "</td><td><ol class='mx-auto'>";
-            foreach($users[$i]->hobbies as $hobby){
-                echo"<li>{$hobby}</li>";
+    <?php
+        foreach($users as $user){
+            echo "<tr>";
+            foreach($user as $key => $value){
+                echo "<td>";
+                if(gettype($value) == 'object' || gettype($value) == 'array'){
+                    foreach($value as $vk => $vv){
+                        if($key == 'gender' && $vk == 'gender'){
+                            $vv == 'm' ? $vv = 'Male' : $vv = 'Female';
+                        }
+                        echo "{$vv}<br>";
+                    }
+                    echo "</td>";
+                }else{
+                    echo "{$value}";
+                }
+                echo "</td>";
             }
-            echo"</ol></td><td><ol class='mx-auto'>";
-            foreach($users[$i]->activities as $activity){
-                echo"<li>{$activity}</li>";
-            }
-            echo "</ol></td><td>".$users[$i]->phones."</td></tr>";
+            echo "</tr>";
         }
-        ?>
+    ?>
     </tbody>
 </table>
 
