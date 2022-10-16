@@ -14,22 +14,10 @@ $cityErorr = "<div class='bg-danger text-center w-50 mx-auto my-2 p-1'>City is r
 
 
 if(isset($_POST['crateProduct'])){
-    $user= $_POST['user'];
     $city= $_POST['city'];
-    $varieties= $_POST['varieties'];
-
-    if($city == "cairo"){
-        $Fees = 0;
-    }
-    if($city == "alex"){
-        $Fees = 30;
-    }
-    if($city == "cairo"){
-        $Fees = 50;
-    }
     
     $errors = [];
-    if(empty($user)){
+    if(empty($_POST['user'])){
         $errors['$user'] ="<div class='bg-danger text-center w-50 mx-auto my-2 p-1'>User name is required </div>";
     }
     function city($cityErorr, $city){
@@ -37,18 +25,16 @@ if(isset($_POST['crateProduct'])){
             return $cityErorr;
         }
     }
-        if(empty($varieties)){
+        if(empty($_POST['varieties'])){
         $errors['$varieties'] ="<div class='bg-danger text-center w-50 mx-auto my-1 p-2'>varieties is required </div>";
     }
 
-    // if(empty($errors1)){
-        // }
-    }
+}
 
 ?>
 <form method="post" class="w-50 text-center mx-auto my-5 pt-5 bg-dark text-white rounded">
 
-    <h1 class="p-3">Please fill all required items</h1>
+    <h1 class="p-3">Please fill all fields</h1>
     <input type="text" name="user" class="form-control w-50 mx-auto my-3" placeholder="Enter your user name" value="<?= $_POST['user'] ?? "" ?>">
     <?= $errors['$user'] ?? "" ?>
 
@@ -67,19 +53,18 @@ if(isset($_POST['crateProduct'])){
     <?= $errors['$varieties'] ?? "" ?>
 
     <button class="btn btn-primary my-3" name="crateProduct">Enter Products</button>
-</form>
 
 <?php
-include "../layout/scripts.php";
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if(empty($errors)){ 
         if(isset($_POST['crateProduct'])){
 
-            if(isset($varieties)){
                 echo"
                 <form method='post' class= 'w-50 text-center mx-auto my-5 p-3 bg-dark text-white text-center rounded'>
                 <h1 class='p-3'>Details</h1>
-                <table class'table table-dark table-hover'>
+                <table class='table table-dark table-hover'>
                 <tr>
                     <th class='text-white text-center'>Product Name</th>
                     <th class='text-white text-center'>Price</th>
@@ -98,35 +83,31 @@ include "../layout/scripts.php";
                         <input type='number' name='quantity[]' class='form-control w-75 mx-auto my-3 text-center' placeholder='Quantity' value='' required>
                     </td>
                 </tr>
-                ", $varieties);
-                echo"</table>";
-                // echo $errors1['$item'] ?? "";
-                // echo $errors1['$price'] ?? "";
-                // echo $errors1['$quantity'] ?? "";
-
-                echo"<button class='btn btn-primary my-3' name='Reciept'>Reciept</button>
+                ", $_POST['varieties']);
+                echo"</table>
+                <button class='btn btn-primary my-3' name='Reciept'>Reciept</button>
                 </form>";
-            }
-
         }
         
         if(isset($_POST['Reciept'])){
             $item= $_POST['item'];
             $price= $_POST['price'];
             $quantity= $_POST['quantity'];
+            $city= $_POST['city'];
             $total= 0;
-            
-            // $errors1 = [];
-            //     if($item < $varieties && $item = ""){
-            //         $errors1['item'] = "<div class='bg-danger text-center w-50 mx-auto my-1 p-2'>please fill all item inputs or edit number of varieties in pervious form </div>";
-            //     }
-            //     if($price < $varieties && $price = ""){
-            //         $errors1['price'] = "<div class='bg-danger text-center w-50 mx-auto my-1 p-2'>please fill all price inputs or edit number of varieties in pervious form </div>";
-            //     }
-            //     if($quantity < $varieties && $quantity = ""){
-            //         $errors1['quantity'] = "<div class='bg-danger text-center w-50 mx-auto my-1 p-2'>please fill all quantity inputs or edit number of varieties in pervious form </div>";
-            //     }
-                
+            $discount = 0;
+            function fees($city){
+                if($city == "cairo"){
+                return 0;
+                }else if($city == "alex"){
+                return 30;
+                }else if($city == "other"){
+                    return 50;
+                }
+            };
+
+            $fees = fees($city);
+
             echo "
             <table class='table table-dark table-hover w-75 text-center mx-auto my-5'>
             <tr>
@@ -146,38 +127,43 @@ include "../layout/scripts.php";
                     $total += $subTotal;
                 }
                 if($total <1000){
-                    $discount = 0;
                     $fTotal = $total +$fees;
                 }elseif($total <3000){
                     $discount = 10;
-                    $fTotal = $total-($total * $discount/100)+$fees;
+                    $fTotal = $total-( $total * $discount/100)+$fees;
                 }elseif($total <4500){
                     $discount = 15;
                     $fTotal = $total-($total * $discount/100)+$fees;
                 }else{
                     $discount = 20;
-                    $fTotal = $total-($total * $discount/100)+$fees;
+                    $fTotal = $total-( $total * $discount/100)+$fees;
                 }
+                $discountValue = $total * $discount/100;
+                
             echo "</table>
-            <table class='table table-dark table-hover w-50 text-center mx-auto my-5'>
+            <table class='table table-dark table-hover w-75  mx-auto my-5'>
                 <tr>
                 <th>Client Name</th>
-                <td>{$user}</td>
+                <td>{$_POST['user']}</td>
                 </tr>
                 <tr>
                 <th>City</th>
-                <td>{$city}</td>
+                <td>{$_POST['city']}</td>
                 </tr>
                 <tr>
                 <th>Total</th>
                 <td>{$total} EGP</td>
                 </tr>
                 <tr>
-                <th>Discount</th>
+                <th>Discount Percentage</th>
                 <td>{$discount} %</td>
                 </tr>
                 <tr>
-                <th>Fees</th>
+                <th>Discount value</th>
+                <td>{$discountValue} </td>
+                </tr>
+                <tr>
+                <th>Delivery Fees</th>
                 <td>{$fees}</td>
                 </tr>
                 <tr>
@@ -191,7 +177,11 @@ include "../layout/scripts.php";
         
     }
 
-    
-// }
+}
 
+?>
+
+</form>
+<?php
+include "../layout/scripts.php";
 ?>
