@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Georgia, serif;
+}
+.bg-hospital{
+    background-image:url(../assets/bg1.jpg);
+    background-size: cover;
+    background-color: #14141475;
+    background-blend-mode: multiply;
+}
+.bg-bank{
+    background-image:url(../assets/bankbg.jpg);
+    background-size: cover;
+    background-color: #1414145b;
+    background-blend-mode: multiply;
+}
+/*
+.bg-supermarket{
+    background-image:url(../assets/marketbg.jpg);
+    background-size: cover;
+    background-color: #1414145b;
+    background-blend-mode: multiply;
+}
+.bg-club{
+    background-image:url(../assets/clubbg.jpg);
+    background-size: cover;
+    background-color: #1414145b;
+    background-blend-mode: multiply;
+ 
+} */
